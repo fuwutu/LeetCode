@@ -1,74 +1,110 @@
 class Solution
 {
 public:
-    vector<vector<string>> findLadders(string start, string end, unordered_set<string> &dict)
+    void search_next_reach(unordered_set<string>& reach, const unordered_set<string>& other_reach, unordered_set<string>& meet, unordered_map<string, vector<string> >& path, unordered_set<string>& dict)
     {
-        vector<vector<string>> result, result_temp;
-        if (dict.count(start) == 1 && dict.count(end) == 1)
+        unordered_set<string> temp;
+        reach.swap(temp);
+
+        for (auto it = temp.begin(); it != temp.end(); ++it)
         {
-            unordered_set<string> step_reach({start});
-            unordered_set<string> step_reach_temp;
-            dict.erase(start);
-            unordered_map<string, vector<string>> parents;
-            while (!step_reach.empty() && parents[end].empty())
+            string s = *it;
+            for (size_t i = 0; i < s.length(); ++i)
             {
-                step_reach.swap(step_reach_temp);
-                step_reach.clear();
-                for (auto it = step_reach_temp.begin(); it != step_reach_temp.end(); ++it)
+                char back = s[i];
+                for (s[i] = 'a'; s[i] <= 'z'; ++s[i])
                 {
-                    string s = *it;
-                    for (size_t i = 0; i < s.length(); ++i)
+                    if (s[i] != back)
                     {
-                        char c = s[i];
-                        for (s[i] = 'a'; s[i] <= 'z'; ++s[i])
+                        if (reach.count(s) == 1)
                         {
-                            if (s[i] != c)
-                            {
-                                if (dict.erase(s) == 1)
-                                {
-                                    step_reach.insert(s);
-                                    parents[s].push_back(*it);
-                                }
-                                else
-                                {
-                                    if (step_reach.count(s) == 1)
-                                    {
-                                        parents[s].push_back(*it);
-                                    }
-                                }
-                            }
+                            path[s].push_back(*it);
                         }
-                        s[i] = c;
+                        else if (dict.erase(s) == 1)
+                        {
+                            path[s].push_back(*it);
+                            reach.insert(s);
+                        }
+                        else if (other_reach.count(s) == 1)
+                        {
+                            path[s].push_back(*it);
+                            reach.insert(s);
+                            meet.insert(s);
+                        }
                     }
                 }
+                s[i] = back;
             }
-            
-            if (!parents[end].empty())
+        }
+    }
+
+    void walk(vector<vector<string> >& path_all, unordered_map<string, vector<string> > path_to)
+    {
+        vector<vector<string> > temp;
+        while (!path_to[path_all.back().back()].empty())
+        {
+            path_all.swap(temp);
+            path_all.clear();
+            for (auto it = temp.begin(); it != temp.end(); ++it)
             {
-                result.push_back({end});
-                while (true)
+                vector<string>& one = *it;
+                vector<string>& p = path_to[one.back()];
+                for (size_t i = 0; i < p.size(); ++i)
                 {
-                    result.swap(result_temp);
-                    result.clear();
-                    for (auto it = result_temp.begin(); it != result_temp.end(); ++it)
+                    path_all.push_back(one);
+                    path_all.back().push_back(p[i]);
+                }
+            }
+        }
+    }
+
+    vector<vector<string> > findLadders(string start, string end, unordered_set<string>& dict)
+    {
+        vector<vector<string> > result, result_temp;
+        if (dict.erase(start) == 1 && dict.erase(end) == 1) 
+        {
+            unordered_map<string, vector<string> > path_start;
+            unordered_map<string, vector<string> > path_end;
+
+            unordered_set<string> reach_start;
+            reach_start.insert(start);
+            unordered_set<string> reach_end;
+            reach_end.insert(end);
+
+            unordered_set<string> meet;
+            while (!reach_start.empty() && !reach_end.empty())
+            {
+                if (reach_start.size() < reach_end.size())
+                {
+                    search_next_reach(reach_start, reach_end, meet, path_start, dict);
+                    if (!meet.empty())
                     {
-                        vector<string>& path = *it;
-                        vector<string>& p = parents[path.back()];
-                        for (size_t i = 0; i < p.size(); ++i)
-                        {
-                            result.push_back(path);
-                            result.back().push_back(p[i]);
-                        }
-                    }
-                    if (result.back().back() == start)
-                    {
-                        for (size_t i = 0; i < result.size(); ++i)
-                        {
-                            reverse(result[i].begin(), result[i].end());
-                        }
                         break;
                     }
                 }
+                else
+                {
+                    search_next_reach(reach_end, reach_start, meet, path_end, dict);
+                    if (!meet.empty())
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (!meet.empty())
+            {
+                for (auto it = meet.begin(); it != meet.end(); ++it)
+                {
+                    result.push_back({*it});
+                }
+
+                walk(result, path_start);
+                for (size_t i = 0; i < result.size(); ++i)
+                {
+                    reverse(result[i].begin(), result[i].end());
+                }
+                walk(result, path_end);
             }
         }
         
