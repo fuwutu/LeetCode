@@ -1,7 +1,7 @@
 class Solution
 {
 public:
-    void search_next_reach(unordered_set<string>& reach, const unordered_set<string>& other_reach, unordered_set<string>& meet, unordered_map<string, vector<string> >& path, unordered_set<string>& dict)
+    void search_next_reach(unordered_set<string>& reach, const unordered_set<string>& other_reach, unordered_set<string>& meet, unordered_map<string, vector<string>>& path, unordered_set<string>& dict)
     {
         unordered_set<string> temp;
         reach.swap(temp);
@@ -38,57 +38,47 @@ public:
         }
     }
 
-    void walk(vector<vector<string> >& path_all, unordered_map<string, vector<string> > path_to)
+    void walk(vector<vector<string>>& all_path, unordered_map<string, vector<string>> kids)
     {
-        vector<vector<string> > temp;
-        while (!path_to[path_all.back().back()].empty())
+        vector<vector<string>> temp;
+        while (!kids[all_path.back().back()].empty())
         {
-            path_all.swap(temp);
-            path_all.clear();
+            all_path.swap(temp);
+            all_path.clear();
             for (auto it = temp.begin(); it != temp.end(); ++it)
             {
-                vector<string>& one = *it;
-                vector<string>& p = path_to[one.back()];
+                vector<string>& one_path = *it;
+                vector<string>& p = kids[one_path.back()];
                 for (size_t i = 0; i < p.size(); ++i)
                 {
-                    path_all.push_back(one);
-                    path_all.back().push_back(p[i]);
+                    all_path.push_back(one_path);
+                    all_path.back().push_back(p[i]);
                 }
             }
         }
     }
 
-    vector<vector<string> > findLadders(string start, string end, unordered_set<string>& dict)
+    vector<vector<string>> findLadders(string start, string end, unordered_set<string>& dict)
     {
-        vector<vector<string> > result, result_temp;
+        vector<vector<string>> result, result_temp;
         if (dict.erase(start) == 1 && dict.erase(end) == 1) 
         {
-            unordered_map<string, vector<string> > path_start;
-            unordered_map<string, vector<string> > path_end;
+            unordered_map<string, vector<string>> kids_from_start;
+            unordered_map<string, vector<string>> kids_from_end;
 
-            unordered_set<string> reach_start;
-            reach_start.insert(start);
-            unordered_set<string> reach_end;
-            reach_end.insert(end);
+            unordered_set<string> reach_start({start});
+            unordered_set<string> reach_end({end});
 
             unordered_set<string> meet;
-            while (!reach_start.empty() && !reach_end.empty())
+            while (meet.empty() && !reach_start.empty() && !reach_end.empty())
             {
                 if (reach_start.size() < reach_end.size())
                 {
-                    search_next_reach(reach_start, reach_end, meet, path_start, dict);
-                    if (!meet.empty())
-                    {
-                        break;
-                    }
+                    search_next_reach(reach_start, reach_end, meet, kids_from_start, dict);
                 }
                 else
                 {
-                    search_next_reach(reach_end, reach_start, meet, path_end, dict);
-                    if (!meet.empty())
-                    {
-                        break;
-                    }
+                    search_next_reach(reach_end, reach_start, meet, kids_from_end, dict);
                 }
             }
 
@@ -99,12 +89,12 @@ public:
                     result.push_back({*it});
                 }
 
-                walk(result, path_start);
+                walk(result, kids_from_start);
                 for (size_t i = 0; i < result.size(); ++i)
                 {
                     reverse(result[i].begin(), result[i].end());
                 }
-                walk(result, path_end);
+                walk(result, kids_from_end);
             }
         }
         
