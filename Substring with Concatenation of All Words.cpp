@@ -9,11 +9,11 @@ public:
         vector<int> result;
         if (S.length() >= len * L.size())
         {
-            map<string, int> string_count;
+            unordered_map<string, int> string_count;
             for (size_t i = 0; i < count; ++i)
             {
                 string& s = L[i];
-                pair<map<string, int>::iterator,bool> ret = string_count.insert(make_pair(s, 1));
+                auto ret = string_count.insert(make_pair(s, 1));
                 if (!ret.second)
                 {
                     ret.first->second += 1;
@@ -30,7 +30,7 @@ public:
                     for (size_t i = 0; i < count; ++i)
                     {
                         string s2 = S.substr(b2, len);
-                        map<string, int>::iterator it2 = string_count.find(s2);
+                        auto it2 = string_count.find(s2);
                         if (it2 != string_count.end())
                         {
                             it2->second -= 1;
@@ -54,7 +54,7 @@ public:
                     while (b2 + len <= S.length())
                     {
                         string s1 = S.substr(b1, len);
-                        map<string, int>::iterator it1 = string_count.find(s1);
+                        auto it1 = string_count.find(s1);
                         if (it1 != string_count.end())
                         {
                             it1->second += 1;
@@ -70,7 +70,7 @@ public:
                         b1 += len;
 
                         string s2 = S.substr(b2, len);
-                        map<string, int>::iterator it2 = string_count.find(s2);
+                        auto it2 = string_count.find(s2);
                         if (it2 != string_count.end())
                         {
                             it2->second -= 1;
@@ -94,7 +94,7 @@ public:
                     while (b1 + len <= S.length())
                     {
                         string s1 = S.substr(b1, len);
-                        map<string, int>::iterator it1 = string_count.find(s1);
+                        auto it1 = string_count.find(s1);
                         if (it1 != string_count.end())
                         {
                             it1->second += 1;
