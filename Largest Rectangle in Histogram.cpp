@@ -7,8 +7,7 @@ public:
         if (!height.empty())
         {
             width.push_back(1);
-            vector<pair<int, int> > height_width;
-            height_width.push_back(make_pair(height[0], 1));
+            vector<pair<int, int> > height_width({{height[0], 1}});
             for (size_t i = 1; i < height.size(); ++i)
             {
                 if (height[i] > height[i - 1])
