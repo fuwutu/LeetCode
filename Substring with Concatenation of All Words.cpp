@@ -1,6 +1,44 @@
 class Solution 
 {
 public:
+    void OneWordIn(const string& s, unordered_map<string, int>& word_count, int& not_match)
+    {
+        auto it = word_count.find(s);
+        if (it != word_count.end())
+        {
+            if (it->second == 0)
+            {
+                not_match += 1;
+            }
+            
+            it->second += 1;
+            
+            if (it->second == 0)
+            {
+                not_match -= 1;
+            }
+        }
+    }
+    
+    void OneWordOut(const string& s, unordered_map<string, int>& word_count, int& not_match)
+    {
+        auto it = word_count.find(s);
+        if (it != word_count.end())
+        {
+            if (it->second == 0)
+            {
+                not_match += 1;
+            }
+            
+            it->second -= 1;
+            
+            if (it->second == 0)
+            {
+                not_match -= 1;
+            }
+        }
+    }
+    
     vector<int> findSubstring(string S, vector<string> &L)
     {
         const size_t count = L.size();
@@ -9,18 +47,18 @@ public:
         vector<int> result;
         if (S.length() >= len * L.size())
         {
-            unordered_map<string, int> string_count;
+            unordered_map<string, int> word_count;
             for (size_t i = 0; i < count; ++i)
             {
                 string& s = L[i];
-                auto ret = string_count.insert(make_pair(s, 1));
+                auto ret = word_count.insert(make_pair(s, 1));
                 if (!ret.second)
                 {
                     ret.first->second += 1;
                 }
             }
 
-            int not_match = string_count.size();
+            int not_match = word_count.size();
             for (size_t start = 0; start < len; ++start)
             {
                 if (start + len * count <= S.length())
@@ -29,20 +67,7 @@ public:
                     size_t b2 = start;
                     for (size_t i = 0; i < count; ++i)
                     {
-                        string s2 = S.substr(b2, len);
-                        auto it2 = string_count.find(s2);
-                        if (it2 != string_count.end())
-                        {
-                            it2->second -= 1;
-                            if (it2->second == 0)
-                            {
-                                not_match -= 1;
-                            }
-                            if (it2->second == -1)
-                            {
-                                not_match += 1;
-                            }
-                        }
+                        OneWordOut(S.substr(b2, len), word_count, not_match);
                         b2 += len;
                     }
 
@@ -53,36 +78,10 @@ public:
 
                     while (b2 + len <= S.length())
                     {
-                        string s1 = S.substr(b1, len);
-                        auto it1 = string_count.find(s1);
-                        if (it1 != string_count.end())
-                        {
-                            it1->second += 1;
-                            if (it1->second == 0)
-                            {
-                                not_match -= 1;
-                            }
-                            if (it1->second == 1)
-                            {
-                                not_match += 1;
-                            }
-                        }
+                        OneWordIn(S.substr(b1, len), word_count, not_match);
                         b1 += len;
 
-                        string s2 = S.substr(b2, len);
-                        auto it2 = string_count.find(s2);
-                        if (it2 != string_count.end())
-                        {
-                            it2->second -= 1;
-                            if (it2->second == 0)
-                            {
-                                not_match -= 1;
-                            }
-                            if (it2->second == -1)
-                            {
-                                not_match += 1;
-                            }
-                        }
+                        OneWordOut(S.substr(b2, len), word_count, not_match);
                         b2 += len;
 
                         if (not_match == 0)
@@ -93,20 +92,7 @@ public:
 
                     while (b1 + len <= S.length())
                     {
-                        string s1 = S.substr(b1, len);
-                        auto it1 = string_count.find(s1);
-                        if (it1 != string_count.end())
-                        {
-                            it1->second += 1;
-                            if (it1->second == 0)
-                            {
-                                not_match -= 1;
-                            }
-                            if (it1->second == 1)
-                            {
-                                not_match += 1;
-                            }
-                        }
+                        OneWordIn(S.substr(b1, len), word_count, not_match);
                         b1 += len;
                     }
                 }
