@@ -6,15 +6,11 @@
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
-class Solution {
+class Solution
+{
 public:
     ListNode *deleteDuplicates(ListNode *head)
     {
-        if (NULL == head)
-        {
-            return NULL;
-        }
-        
         ListNode help(0);
         help.next = head;
         ListNode* cur = &help;
