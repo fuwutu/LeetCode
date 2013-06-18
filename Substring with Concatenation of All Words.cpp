@@ -79,3 +79,86 @@ public:
         return result;
     }
 };
+
+//=============================================================================
+
+class Solution2
+{
+public:
+    vector<int> findSubstring(string S, vector<string> &L)
+    {
+        const size_t count = L.size();
+        const size_t len = L[0].length();
+        const size_t total_len = len * count;
+        
+        vector<int> result;
+        if (S.length() >= total_len)
+        {
+            unordered_map<string, int> word2count;
+            for (auto s : L)
+            {
+                word2count[s] = word2count[s] + 1;
+            }
+
+            size_t not_enough = word2count.size();
+            list<unordered_map<string, int>::iterator> lst;
+            string word;
+
+            for (size_t start = 0; start < len; ++start)
+            {
+                if (start + total_len <= S.length())
+                {
+                    size_t b = start;
+                    while (true)
+                    {
+                        if (lst.size() == count)
+                        {
+                            auto it = lst.front();
+                            if (it->second == 0)
+                            {
+                                not_enough += 1;
+                            }
+                            it->second += 1;
+                            lst.pop_front();
+                        }
+
+                        word.assign(S, b, len);
+                        b += len;
+
+                        auto it = word2count.find(word);
+                        if (it != word2count.end())
+                        {
+                            it->second -= 1;
+                            if (it->second == 0)
+                            {
+                                not_enough -= 1;
+                                if (not_enough == 0)
+                                {
+                                    result.push_back(b - total_len);
+                                }
+                            }
+                            lst.push_back(it);
+                        }
+                        else
+                        {
+                            for (auto it : lst)
+                            {
+                                it->second += 1;
+                            }
+                            lst.clear();
+                            not_enough = word2count.size();
+
+                            if (b + total_len > S.length())
+                            {
+                                break;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        
+        return result;
+    }
+};
