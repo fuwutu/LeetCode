@@ -25,7 +25,7 @@ public:
                     size_t not_enough = word2count.size();
                     size_t num = 0;
                     size_t b = start;
-                    while (true)
+                    while (b + len <= S.length())
                     {
                         if (num == count)
                         {
@@ -66,8 +66,8 @@ public:
                             if (num != 1)
                             {
                                 word2require = word2count;
-                                not_enough = word2count.size();
                             }
+                            not_enough = word2count.size();
                             num = 0;
                         }
 
