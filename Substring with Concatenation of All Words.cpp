@@ -6,20 +6,14 @@ public:
         auto it = word_count.find(s);
         if (it != word_count.end())
         {
-            if (it->second == 0)
-            {
-                not_match += 1;
-            }
-            
-            it->second += 1;
-            
+            it->second -= 1;
             if (it->second == 0)
             {
                 not_match -= 1;
             }
         }
     }
-    
+
     void OneWordOut(const string& s, unordered_map<string, int>& word_count, int& not_match)
     {
         auto it = word_count.find(s);
@@ -29,13 +23,7 @@ public:
             {
                 not_match += 1;
             }
-            
-            it->second -= 1;
-            
-            if (it->second == 0)
-            {
-                not_match -= 1;
-            }
+            it->second += 1;
         }
     }
     
@@ -43,6 +31,7 @@ public:
     {
         const size_t count = L.size();
         const size_t len = L[0].length();
+        string word;
 
         vector<int> result;
         if (S.length() >= len * L.size())
@@ -67,7 +56,8 @@ public:
                     size_t b2 = start;
                     for (size_t i = 0; i < count; ++i)
                     {
-                        OneWordOut(S.substr(b2, len), word_count, not_match);
+                        word.assign(S, b2, len);
+                        OneWordIn(word, word_count, not_match);
                         b2 += len;
                     }
 
@@ -78,10 +68,12 @@ public:
 
                     while (b2 + len <= S.length())
                     {
-                        OneWordIn(S.substr(b1, len), word_count, not_match);
+                        word.assign(S, b1, len);
+                        OneWordOut(word, word_count, not_match);
                         b1 += len;
 
-                        OneWordOut(S.substr(b2, len), word_count, not_match);
+                        word.assign(S, b2, len);
+                        OneWordIn(word, word_count, not_match);
                         b2 += len;
 
                         if (not_match == 0)
@@ -92,7 +84,8 @@ public:
 
                     while (b1 + len <= S.length())
                     {
-                        OneWordIn(S.substr(b1, len), word_count, not_match);
+                        word.assign(S, b1, len);
+                        OneWordOut(word, word_count, not_match);
                         b1 += len;
                     }
                 }
