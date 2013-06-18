@@ -111,6 +111,17 @@ public:
                     size_t b = start;
                     while (true)
                     {
+                        if (b + len > S.length())
+                        {
+                            for (auto it : lst)
+                            {
+                                it->second += 1;
+                            }
+                            lst.clear();
+                            not_enough = word2count.size();
+                            break;
+                        }
+                        
                         if (lst.size() == count)
                         {
                             auto it = lst.front();
