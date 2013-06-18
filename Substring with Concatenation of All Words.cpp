@@ -10,7 +10,7 @@ public:
         vector<int> result;
         if (S.length() >= total_len)
         {
-            map<string, int> word2count;
+            unordered_map<string, int> word2count;
             for (auto s : L)
             {
                 word2count[s] = word2count[s] + 1;
@@ -153,7 +153,6 @@ public:
                                 break;
                             }
                         }
-
                     }
                 }
             }
