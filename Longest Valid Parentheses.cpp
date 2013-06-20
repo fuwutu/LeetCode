@@ -18,11 +18,10 @@ public:
             }
             else
             {
-                --left;
-                if (left != -1)
+                if (left != 0)
                 {
-                    count += 1;
-                    count += position_count.back();
+                    --left;
+                    count += (1 + position_count.back());
                     if (count > longest)
                     {
                         longest = count;
@@ -31,9 +30,7 @@ public:
                 }
                 else
                 {
-                    left = 0;
                     count = 0;
-                    position_count.clear();
                 }
             }
         }
