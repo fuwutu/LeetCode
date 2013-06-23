@@ -1,12 +1,12 @@
 /**
- * Definition for binary tree
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
+* Definition for binary tree
+* struct TreeNode {
+* int val;
+* TreeNode *left;
+* TreeNode *right;
+* TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+* };
+*/
 class Solution
 {
 public:
@@ -24,6 +24,6 @@ public:
     
     bool isSymmetric(TreeNode* root)
     {
-        return isSymmetric(root, root);
+        return (root == nullptr) || isSymmetric(root->left, root->right);
     }
 };
