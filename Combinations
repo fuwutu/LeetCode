@@ -1,0 +1,42 @@
+class Solution
+{
+public:
+    vector<vector<int>> combine(int n, int k)
+    {
+        vector<int> one;
+        for (int i = n - k + 1; i <= n; ++i)
+        {
+            one.push_back(i);
+        }
+        
+        vector<vector<int>> all({one});
+        while (true)
+        {
+            int i = k - 1;
+            for (; i > 0; --i)
+            {
+                if (one[i] > one[i-1] + 1)
+                {
+                    break;
+                }
+            }
+            
+            if (i > 0 || one[i] > 1)
+            {
+                one[i] -= 1;
+                for (int j = k - 1; j > i; --j)
+                {
+                    one[j] = n + 1 - k + j;
+                }
+            }
+            else
+            {
+                break;
+            }
+            
+            all.push_back(one);
+        }
+        
+        return all;
+    }
+};
