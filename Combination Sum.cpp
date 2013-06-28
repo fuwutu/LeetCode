@@ -9,11 +9,6 @@ public:
         vector<vector<int>> combination({{}});
         for (int n : candidates)
         {
-            if (combination.empty())
-            {
-                break;
-            }
-            
             vector<vector<int>> temp;
             combination.swap(temp);
             
