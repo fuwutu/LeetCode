@@ -11,22 +11,20 @@ public:
         vector<bool> match(s1.size() + 1, false);
         match[0] = true;
         
-        for (size_t c3 = 1; c3 <= s3.size(); ++c3)
+        for (size_t c3 = 1; c3 <= s2.size(); ++c3)
         {
-            if (c3 <= s2.size())
+            for (size_t c1 = min(s1.size(), c3); c1 >= 1; --c1)
             {
-                for (size_t c1 = min(s1.size(), c3); c1 >= 1 ; --c1)
-                {
-                    match[c1] = (match[c1-1] && s1[c1-1] == s3[c3-1] || match[c1] && c1 < c3 && s2[c3-c1-1] == s3[c3-1]);
-                }
-                match[0] = (match[0] && s2[c3-1] == s3[c3-1]);
+                match[c1] = (match[c1-1] && s1[c1-1] == s3[c3-1] || match[c1] && c1 < c3 && s2[c3-c1-1] == s3[c3-1]);
             }
-            else
+            match[0] = (match[0] && s2[c3-1] == s3[c3-1]);
+        }
+        
+        for (size_t c3 = s2.size() + 1; c3 <= s3.size(); ++c3)
+        {
+            for (size_t c1 = min(s1.size(), c3); c1 >= c3 - s2.size() ; --c1)
             {
-                for (size_t c1 = min(s1.size(), c3); c1 >= c3 - s2.size() ; --c1)
-                {
-                    match[c1] = match[c1-1] && s1[c1-1] == s3[c3-1] || match[c1] && c1 < c3 && s2[c3-c1-1] == s3[c3-1];
-                }
+                match[c1] = match[c1-1] && s1[c1-1] == s3[c3-1] || match[c1] && c1 < c3 && s2[c3-c1-1] == s3[c3-1];
             }
         }
         
